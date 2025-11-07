@@ -1,5 +1,5 @@
 <?php
-if (! defined('WP_DEBUG')) {
+if (!defined('WP_DEBUG')) {
     die('Direct access forbidden.');
 }
 add_action('wp_enqueue_scripts', function () {
@@ -37,7 +37,7 @@ function format_number_with_commas($number, $decimals = 0)
         return "0"; // Return a default value
     }
 
-    return number_format((float)$number, $decimals);
+    return number_format((float) $number, $decimals);
 }
 
 function acf_mrl_shortcode($atts)
@@ -51,7 +51,8 @@ function acf_mrl_shortcode($atts)
         'acf'
     );
 
-    if (!$atts['field']) return '';
+    if (!$atts['field'])
+        return '';
 
     return get_field($atts['field'], $atts['post_id']);
 }
@@ -83,12 +84,12 @@ function property_details_header_shortcode($atts)
     echo '<div class="property-header-container">';
 
     if (esc_attr($atts['lang']) == 'en') {
-        $property_type_label = get_property_type_label($property_type,  'en');
+        $property_type_label = get_property_type_label($property_type, 'en');
         echo '<a class="mrl-link mrl-link-black" href="/properties">';
         echo '<div class="property-header-label">JAPAN ' . esc_html($property_type_label) . ' FOR SALE </div>';
         echo '</a>';
     } else {
-        $property_type_label = get_property_type_label($property_type_ja,  'ja');
+        $property_type_label = get_property_type_label($property_type_ja, 'ja');
         echo '<a class="mrl-link mrl-link-black" href="/jp/properties-jp">';
         echo '<div class="property-header-label">日本の' . esc_html($property_type_label) . '販売</div>';
         echo '</a>';
@@ -169,13 +170,13 @@ add_shortcode('property_details_location', 'property_details_location_shortcode'
 function enqueue_currency_converter_script()
 {
     if (is_singular()) {
-?>
+        ?>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const selector = document.getElementById('currency-selector');
                 const priceElement = document.getElementById('converted-price');
 
-                selector.addEventListener('change', async function() {
+                selector.addEventListener('change', async function () {
                     const currency = this.value;
 
                     if (currency === 'JPY') {
@@ -210,7 +211,7 @@ function enqueue_currency_converter_script()
                 });
             });
         </script>
-    <?php
+        <?php
     }
 }
 add_action('wp_footer', 'enqueue_currency_converter_script');
@@ -250,7 +251,7 @@ function format_acf_value($field_key, $value, $lang)
         case 'general_land_size':
         case 'general_floor_area':
         case 'general_building_area':
-		case 'general_land_area':
+        case 'general_land_area':
             $suffix = 'm²';
             break;
 
@@ -310,230 +311,230 @@ function get_property_label($property_type, $lang = 'en')
     $label_map = [
         'holidayHome' => [
             'en' => [
-                'general_property_type'           => 'Property Type',
-                'general_price'                   => 'Price',
-                'general_location'                => 'Location',
-                'general_access'                  => 'Access',
-                'general_urban_planning_area'     => 'Urban Planning Area',
-                'general_land_classification'     => 'Land Category',
-                'general_zoning'                  => 'Zoning',
-                'general_rights'                  => 'Land Rights',
-                'general_building_area'           => 'Building Area',
-                'general_land_size'               => 'Land Size',
-                'general_building_to_land_ratio'  => 'Building to Land Ratio',
-                'general_floor_area_ratio'        => 'Floor Area Ratio',
-                'general_structure'               => 'Structure',
-                'general_completion_date'         => 'Completion Date',
-                'general_layout'                  => 'Layout',
-                'general_parking'                 => 'Parking',
-                'general_status'                  => 'Status',
-                'general_handover_date'           => 'Handover Date',
+                'general_property_type' => 'Property Type',
+                'general_price' => 'Price',
+                'general_location' => 'Location',
+                'general_access' => 'Access',
+                'general_urban_planning_area' => 'Urban Planning Area',
+                'general_land_classification' => 'Land Category',
+                'general_zoning' => 'Zoning',
+                'general_rights' => 'Land Rights',
+                'general_building_area' => 'Building Area',
+                'general_land_size' => 'Land Size',
+                'general_building_to_land_ratio' => 'Building to Land Ratio',
+                'general_floor_area_ratio' => 'Floor Area Ratio',
+                'general_structure' => 'Structure',
+                'general_completion_date' => 'Completion Date',
+                'general_layout' => 'Layout',
+                'general_parking' => 'Parking',
+                'general_status' => 'Status',
+                'general_handover_date' => 'Handover Date',
             ],
             'ja' => [
-                'general_property_type_ja'           => '物件種類',
-                'general_price'                      => '価格',
-                'general_location'                   => '所在地',
-                'general_access'                     => '最寄り駅からのアクセス',
-                'general_urban_planning_area_ja'     => '都市計画',
-                'general_land_classification_ja'     => '地目',
-                'general_zoning_ja'                  => '用途地域',
-                'general_rights_ja'                  => '所有権',
-                'general_building_area'              => '建物面積',
-                'general_land_size'                  => '土地面積',
-                'general_building_to_land_ratio'     => '建蔽率',
-                'general_floor_area_ratio'           => '容積率',
-                'general_structure_ja'               => '構造',
-                'general_completion_date'            => '築年月',
-                'general_layout'                     => '間取り',
-                'general_parking_ja'                 => '駐車場',
-                'general_status_ja'                  => '現況',
-                'general_handover_date_ja'           => '引き渡し日',
+                'general_property_type_ja' => '物件種類',
+                'general_price' => '価格',
+                'general_location' => '所在地',
+                'general_access' => '最寄り駅からのアクセス',
+                'general_urban_planning_area_ja' => '都市計画',
+                'general_land_classification_ja' => '地目',
+                'general_zoning_ja' => '用途地域',
+                'general_rights_ja' => '所有権',
+                'general_building_area' => '建物面積',
+                'general_land_size' => '土地面積',
+                'general_building_to_land_ratio' => '建蔽率',
+                'general_floor_area_ratio' => '容積率',
+                'general_structure_ja' => '構造',
+                'general_completion_date' => '築年月',
+                'general_layout' => '間取り',
+                'general_parking_ja' => '駐車場',
+                'general_status_ja' => '現況',
+                'general_handover_date_ja' => '引き渡し日',
             ],
         ],
         'house' => [
             'en' => [
-                'general_property_type'           => 'Property Type',
-                'general_price'                   => 'Price',
-                'general_location'                => 'Location',
-                'general_access'                  => 'Access',
-                'general_urban_planning_area'     => 'Urban Planning Area',
-                'general_land_classification'     => 'Land Category',
-                'general_zoning'                  => 'Zoning',
-                'general_rights'                  => 'Land Rights',
-                'general_building_area'           => 'Building Area',
-                'general_land_size'               => 'Land Size',
-                'general_building_to_land_ratio'  => 'Building to Land Ratio',
-                'general_floor_area_ratio'        => 'Floor Area Ratio',
-                'general_structure'               => 'Structure',
-                'general_completion_date'         => 'Completion Date',
-                'general_layout'                  => 'Layout',
-                'general_parking'                 => 'Parking',
-                'general_status'                  => 'Status',
-                'general_handover_date'           => 'Handover Date',
+                'general_property_type' => 'Property Type',
+                'general_price' => 'Price',
+                'general_location' => 'Location',
+                'general_access' => 'Access',
+                'general_urban_planning_area' => 'Urban Planning Area',
+                'general_land_classification' => 'Land Category',
+                'general_zoning' => 'Zoning',
+                'general_rights' => 'Land Rights',
+                'general_building_area' => 'Building Area',
+                'general_land_size' => 'Land Size',
+                'general_building_to_land_ratio' => 'Building to Land Ratio',
+                'general_floor_area_ratio' => 'Floor Area Ratio',
+                'general_structure' => 'Structure',
+                'general_completion_date' => 'Completion Date',
+                'general_layout' => 'Layout',
+                'general_parking' => 'Parking',
+                'general_status' => 'Status',
+                'general_handover_date' => 'Handover Date',
             ],
             'ja' => [
-                'general_property_type_ja'           => '物件種類',
-                'general_price'                      => '価格',
-                'general_location'                   => '所在地',
-                'general_access'                     => '最寄り駅からのアクセス',
-                'general_urban_planning_area_ja'     => '都市計画',
-                'general_land_classification_ja'     => '地目',
-                'general_zoning_ja'                  => '用途地域',
-                'general_rights_ja'                  => '所有権',
-                'general_building_area'              => '建物面積',
-                'general_land_size'                  => '土地面積',
-                'general_building_to_land_ratio'     => '建蔽率',
-                'general_floor_area_ratio'           => '容積率',
-                'general_structure_ja'               => '構造',
-                'general_completion_date'            => '築年月',
-                'general_layout'                     => '間取り',
-                'general_parking_ja'                 => '駐車場',
-                'general_status_ja'                  => '現況',
-                'general_handover_date_ja'           => '引き渡し日',
+                'general_property_type_ja' => '物件種類',
+                'general_price' => '価格',
+                'general_location' => '所在地',
+                'general_access' => '最寄り駅からのアクセス',
+                'general_urban_planning_area_ja' => '都市計画',
+                'general_land_classification_ja' => '地目',
+                'general_zoning_ja' => '用途地域',
+                'general_rights_ja' => '所有権',
+                'general_building_area' => '建物面積',
+                'general_land_size' => '土地面積',
+                'general_building_to_land_ratio' => '建蔽率',
+                'general_floor_area_ratio' => '容積率',
+                'general_structure_ja' => '構造',
+                'general_completion_date' => '築年月',
+                'general_layout' => '間取り',
+                'general_parking_ja' => '駐車場',
+                'general_status_ja' => '現況',
+                'general_handover_date_ja' => '引き渡し日',
             ],
         ],
         'condo' => [
             'en' => [
-                'general_property_type'           => 'Property Type',
-                'general_price'                   => 'Price',
-                'general_location'                => 'Location',
-                'general_access'                  => 'Access',
-                'general_zoning'                  => 'Zoning',
-                'general_rights'                  => 'Land Rights',
-                'general_building_name'           => 'Building Name',
-                'general_floor_area'              => 'Floor Area',
-                'general_floor_located'           => 'Floor Located',
-                'general_structure'               => 'Structure',
-                'general_completion_date'         => 'Completion Date',
-                'general_layout'                  => 'Layout',
-                'general_parking'                 => 'Parking',
-                'general_management_type'         => 'Management Type',
-                'general_management_fee'          => 'Management Fee',
+                'general_property_type' => 'Property Type',
+                'general_price' => 'Price',
+                'general_location' => 'Location',
+                'general_access' => 'Access',
+                'general_zoning' => 'Zoning',
+                'general_rights' => 'Land Rights',
+                'general_building_name' => 'Building Name',
+                'general_floor_area' => 'Floor Area',
+                'general_floor_located' => 'Floor Located',
+                'general_structure' => 'Structure',
+                'general_completion_date' => 'Completion Date',
+                'general_layout' => 'Layout',
+                'general_parking' => 'Parking',
+                'general_management_type' => 'Management Type',
+                'general_management_fee' => 'Management Fee',
                 'general_repair_reserve_fund_fee' => 'Repair Reserve Fund Fee',
-                'general_status'                  => 'Status',
-                'general_handover_date'           => 'Handover Date',
+                'general_status' => 'Status',
+                'general_handover_date' => 'Handover Date',
             ],
             'ja' => [
-                'general_property_type_ja'           => '物件種類',
-                'general_price'                      => '価格',
-                'general_location'                   => '所在地',
-                'general_access'                     => '最寄り駅からのアクセス',
-                'general_zoning_ja'                  => '用途地域',
-                'general_rights_ja'                  => '所有権',
-                'general_building_name'              => '建物名',
-                'general_floor_area'                 => 'フロア面積',
-                'general_floor_located'              => '物件の所在階数',
-                'general_structure_ja'               => '構造',
-                'general_completion_date'            => '築年月',
-                'general_layout'                     => '間取り',
-                'general_parking_ja'                 => '駐車場',
-                'general_management_type_ja'         => '管理形態',
-                'general_management_fee'             => '管理費',
-                'general_repair_reserve_fund_fee'    => '修繕積立費',
-                'general_status_ja'                  => '現況',
-                'general_handover_date_ja'           => '引き渡し日',
+                'general_property_type_ja' => '物件種類',
+                'general_price' => '価格',
+                'general_location' => '所在地',
+                'general_access' => '最寄り駅からのアクセス',
+                'general_zoning_ja' => '用途地域',
+                'general_rights_ja' => '所有権',
+                'general_building_name' => '建物名',
+                'general_floor_area' => 'フロア面積',
+                'general_floor_located' => '物件の所在階数',
+                'general_structure_ja' => '構造',
+                'general_completion_date' => '築年月',
+                'general_layout' => '間取り',
+                'general_parking_ja' => '駐車場',
+                'general_management_type_ja' => '管理形態',
+                'general_management_fee' => '管理費',
+                'general_repair_reserve_fund_fee' => '修繕積立費',
+                'general_status_ja' => '現況',
+                'general_handover_date_ja' => '引き渡し日',
             ],
         ],
         'investPropertyWholeBldg' => [
             'en' => [
-                'general_property_type'           => 'Property Type',
-                'general_price'                   => 'Price',
-                'general_location'                => 'Location',
-                'general_access'                  => 'Access',
-                'general_urban_planning_area'     => 'Urban Planning Area',
-                'general_land_classification'     => 'Land Category',
-                'general_zoning'                  => 'Zoning',
-                'general_rights'                  => 'Land Rights',
-                'general_building_name'           => 'Building Name',
-                'general_num_of_floor'           => '# of Floors',
-                'general_land_area'               => 'Land Area',
-                'general_total_floor_size'         => 'Total Floor Size',
-                'general_total_units'             => 'Total Units',
-                'general_building_to_land_ratio'  => 'Building to Land Ratio',
-                'general_floor_area_ratio'        => 'Floor Area Ratio',
-                'general_structure'               => 'Structure',
-                'general_completion_date'         => 'Completion Date',
-                'general_gross_yield'             => 'Gross Yield',
-                'general_monthly_rental_income'   => 'Monthly Rental Income',
-                'general_yearly_rental_income'    => 'Yearly Rental Income',
-                'general_status'                  => 'Status',
-                'general_handover_date'           => 'Handover Date',
+                'general_property_type' => 'Property Type',
+                'general_price' => 'Price',
+                'general_location' => 'Location',
+                'general_access' => 'Access',
+                'general_urban_planning_area' => 'Urban Planning Area',
+                'general_land_classification' => 'Land Category',
+                'general_zoning' => 'Zoning',
+                'general_rights' => 'Land Rights',
+                'general_building_name' => 'Building Name',
+                'general_num_of_floor' => '# of Floors',
+                'general_land_area' => 'Land Area',
+                'general_total_floor_size' => 'Total Floor Size',
+                'general_total_units' => 'Total Units',
+                'general_building_to_land_ratio' => 'Building to Land Ratio',
+                'general_floor_area_ratio' => 'Floor Area Ratio',
+                'general_structure' => 'Structure',
+                'general_completion_date' => 'Completion Date',
+                'general_gross_yield' => 'Gross Yield',
+                'general_monthly_rental_income' => 'Monthly Rental Income',
+                'general_yearly_rental_income' => 'Yearly Rental Income',
+                'general_status' => 'Status',
+                'general_handover_date' => 'Handover Date',
             ],
             'ja' => [
-                'general_property_type_ja'           => '物件種類',
-                'general_price'                      => '価格',
-                'general_location'                   => '所在地',
-                'general_access'                     => '最寄り駅からのアクセス',
-                'general_urban_planning_area_ja'     => '都市計画',
-                'general_land_classification_ja'     => '地目',
-                'general_zoning_ja'                  => '用途地域',
-                'general_rights_ja'                  => '所有権',
-                'general_building_name'              => '建物名',
-                'general_num_of_floor'               => '階数',
-                'general_land_area'                  => '土地面積',
-                'general_total_floor_size'           => '延床面積',
-                'general_total_units'                => '合計部屋数',
-                'general_building_to_land_ratio'     => '建蔽率',
-                'general_floor_area_ratio'           => '容積率',
-                'general_structure_ja'               => '構造',
-                'general_completion_date'            => '築年月',
-                'general_gross_yield'                => '表面利回り',
-                'general_monthly_rental_income'      => '満室想定月収',
-                'general_yearly_rental_income'       => '満室想定年収',
-                'general_status_ja'                  => '現況',
-                'general_handover_date_ja'           => '引き渡し日',
+                'general_property_type_ja' => '物件種類',
+                'general_price' => '価格',
+                'general_location' => '所在地',
+                'general_access' => '最寄り駅からのアクセス',
+                'general_urban_planning_area_ja' => '都市計画',
+                'general_land_classification_ja' => '地目',
+                'general_zoning_ja' => '用途地域',
+                'general_rights_ja' => '所有権',
+                'general_building_name' => '建物名',
+                'general_num_of_floor' => '階数',
+                'general_land_area' => '土地面積',
+                'general_total_floor_size' => '延床面積',
+                'general_total_units' => '合計部屋数',
+                'general_building_to_land_ratio' => '建蔽率',
+                'general_floor_area_ratio' => '容積率',
+                'general_structure_ja' => '構造',
+                'general_completion_date' => '築年月',
+                'general_gross_yield' => '表面利回り',
+                'general_monthly_rental_income' => '満室想定月収',
+                'general_yearly_rental_income' => '満室想定年収',
+                'general_status_ja' => '現況',
+                'general_handover_date_ja' => '引き渡し日',
 
 
             ],
         ],
         'investPropertyCondo' => [
             'en' => [
-                'general_property_type'           => 'Property Type',
-                'general_price'                   => 'Price',
-                'general_location'                => 'Location',
-                'general_access'                  => 'Access',
-                'general_urban_planning_area'     => 'Urban Planning Area',
-                'general_land_classification'     => 'Land Category',
-                'general_zoning'                  => 'Zoning',
-                'general_rights'                  => 'Land Rights',
-                'general_building_name'           => 'Building Name',
-                'general_num_of_floor'           => '# of Floors',
-                'general_floor_located'           => 'Floor Located',
-                'general_building_area'           => 'Building Area',
-                'general_total_floor_size'         => 'Total Floor Size',
-                'general_parking'                 => 'Parking',
-                'general_management_type'         => 'Management Type',
-                'general_structure'               => 'Structure',
-                'general_completion_date'         => 'Completion Date',
-                'general_gross_yield'             => 'Gross Yield',
-                'general_management_fee'          => 'Management Fee',
+                'general_property_type' => 'Property Type',
+                'general_price' => 'Price',
+                'general_location' => 'Location',
+                'general_access' => 'Access',
+                'general_urban_planning_area' => 'Urban Planning Area',
+                'general_land_classification' => 'Land Category',
+                'general_zoning' => 'Zoning',
+                'general_rights' => 'Land Rights',
+                'general_building_name' => 'Building Name',
+                'general_num_of_floor' => '# of Floors',
+                'general_floor_located' => 'Floor Located',
+                'general_building_area' => 'Building Area',
+                'general_total_floor_size' => 'Total Floor Size',
+                'general_parking' => 'Parking',
+                'general_management_type' => 'Management Type',
+                'general_structure' => 'Structure',
+                'general_completion_date' => 'Completion Date',
+                'general_gross_yield' => 'Gross Yield',
+                'general_management_fee' => 'Management Fee',
                 'general_repair_reserve_fund_fee' => 'Repair Reserve Fund Fee',
-                'general_status'                  => 'Status',
-                'general_handover_date'           => 'Handover Date',
+                'general_status' => 'Status',
+                'general_handover_date' => 'Handover Date',
             ],
             'ja' => [
-                'general_property_type_ja'           => '物件種類',
-                'general_price'                      => '価格',
-                'general_location'                   => '所在地',
-                'general_access'                     => '最寄り駅からのアクセス',
-                'general_urban_planning_area_ja'     => '都市計画',
-                'general_land_classification_ja'     => '地目',
-                'general_zoning_ja'                  => '用途地域',
-                'general_rights_ja'                  => '所有権',
-                'general_building_name'              => '建物名',
-                'general_num_of_floor'               => '階数',
-                'general_floor_located'              => '物件の所在階数',
-                'general_building_area'              => '建物面積',
-                'general_total_floor_size'           => '延床面積',
-                'general_parking_ja'                 => '駐車場',
-                'general_management_type_ja'         => '管理形態',
-                'general_structure_ja'               => '構造',
-                'general_completion_date'            => '築年月',
-                'general_gross_yield'                => '表面利回り',
-                'general_management_fee'             => '管理費',
-                'general_repair_reserve_fund_fee'    => '修繕積立費',
-                'general_status_ja'                  => '現況',
-                'general_handover_date_ja'           => '引き渡し日',
+                'general_property_type_ja' => '物件種類',
+                'general_price' => '価格',
+                'general_location' => '所在地',
+                'general_access' => '最寄り駅からのアクセス',
+                'general_urban_planning_area_ja' => '都市計画',
+                'general_land_classification_ja' => '地目',
+                'general_zoning_ja' => '用途地域',
+                'general_rights_ja' => '所有権',
+                'general_building_name' => '建物名',
+                'general_num_of_floor' => '階数',
+                'general_floor_located' => '物件の所在階数',
+                'general_building_area' => '建物面積',
+                'general_total_floor_size' => '延床面積',
+                'general_parking_ja' => '駐車場',
+                'general_management_type_ja' => '管理形態',
+                'general_structure_ja' => '構造',
+                'general_completion_date' => '築年月',
+                'general_gross_yield' => '表面利回り',
+                'general_management_fee' => '管理費',
+                'general_repair_reserve_fund_fee' => '修繕積立費',
+                'general_status_ja' => '現況',
+                'general_handover_date_ja' => '引き渡し日',
 
 
             ],
@@ -548,17 +549,17 @@ function property_details_shortcode($atts)
 {
     $atts = shortcode_atts(['lang' => 'en'], $atts);
     $lang = esc_attr($atts['lang']);
-    $language   = get_field('general_language');
-    $property_type    = get_field('general_property_type');
+    $language = get_field('general_language');
+    $property_type = get_field('general_property_type');
     $property_type_ja = get_field('general_property_type_ja');
     $is_property_type = ['general_property_type', 'general_property_type_ja'];
 
     if ($lang === 'en' || $language === 'en') {
         $acf_fields = get_property_label($property_type, 'en');
-        $property_type_label = get_property_type_label($property_type,  'en');
+        $property_type_label = get_property_type_label($property_type, 'en');
     } else {
         $acf_fields = get_property_label($property_type_ja, 'ja');
-        $property_type_label = get_property_type_label($property_type_ja,  'ja');
+        $property_type_label = get_property_type_label($property_type_ja, 'ja');
     }
 
     ob_start();
@@ -567,7 +568,8 @@ function property_details_shortcode($atts)
     foreach ($acf_fields as $field_key => $label) {
         // Conditional exclusions
         $value = get_field($field_key);
-        if (empty($value)) continue;
+        if (empty($value))
+            continue;
 
         list($prefix, $formatted_value, $suffix) = format_acf_value($field_key, $value, $lang);
 
@@ -592,13 +594,13 @@ function similar_properties_shortcode($atts)
 {
     // Extract shortcode attributes
     $atts = shortcode_atts(array(
-        'post_type'      => 'property', // Default post type
+        'post_type' => 'property', // Default post type
         'posts_per_page' => 3,          // Default number of posts
-        'orderby'        => 'date',     // Order by date to get the latest posts first
-        'order'         => 'DESC',      // Display in descending order (newest first)
-        'taxonomy'       => '',         // Taxonomy name (e.g., 'property_type')
-        'term'           => '',         // Taxonomy term slug (e.g., 'condo')
-        'lang'           => 'en',      // Language attribute (en or ja)
+        'orderby' => 'date',     // Order by date to get the latest posts first
+        'order' => 'DESC',      // Display in descending order (newest first)
+        'taxonomy' => '',         // Taxonomy name (e.g., 'property_type')
+        'term' => '',         // Taxonomy term slug (e.g., 'condo')
+        'lang' => 'en',      // Language attribute (en or ja)
     ), $atts);
 
     // Get the current post ID
@@ -606,10 +608,10 @@ function similar_properties_shortcode($atts)
 
     // Define the query arguments
     $args = array(
-        'post_type'      => $atts['post_type'], // Use dynamic post type
+        'post_type' => $atts['post_type'], // Use dynamic post type
         'posts_per_page' => $atts['posts_per_page'], // Number of posts to display
-        'post__not_in'   => array($current_post_id), // Exclude the current property
-        'orderby'        => $atts['orderby'], // Randomize the results (optional)
+        'post__not_in' => array($current_post_id), // Exclude the current property
+        'orderby' => $atts['orderby'], // Randomize the results (optional)
     );
 
     // Add taxonomy filter if provided
@@ -617,8 +619,8 @@ function similar_properties_shortcode($atts)
         $args['tax_query'] = array(
             array(
                 'taxonomy' => $atts['taxonomy'], // Taxonomy name (e.g., 'property_type')
-                'field'    => 'slug',            // Use term slug
-                'terms'    => $atts['term'],     // Term slug (e.g., 'condo')
+                'field' => 'slug',            // Use term slug
+                'terms' => $atts['term'],     // Term slug (e.g., 'condo')
             ),
         );
     }
@@ -630,12 +632,13 @@ function similar_properties_shortcode($atts)
     $output = '<div class="similar-properties">';
 
     // Check if there are posts
-    if ($query->have_posts()) :
-        while ($query->have_posts()) : $query->the_post();
+    if ($query->have_posts()):
+        while ($query->have_posts()):
+            $query->the_post();
             // Get the ACF field values
             $general_layout = get_field('general_layout');
-            $general_title  = get_field('general_title');
-            $general_price  = get_field('general_price');
+            $general_title = get_field('general_title');
+            $general_price = get_field('general_price');
             $general_sub_title = get_field('general_sub_title');
 
             // Start the property card with a link to the property details page
@@ -672,7 +675,7 @@ function similar_properties_shortcode($atts)
                 $output .= '<div class="property-sub-title">' . esc_html($general_sub_title) . '</div>';
             }
             $output .= '</a>';
-			// Get inquiry button
+            // Get inquiry button
             $output .= get_inquiry_button_html(get_the_ID(), esc_attr($atts['lang']));
 
             // End the property wrap
@@ -682,7 +685,7 @@ function similar_properties_shortcode($atts)
             $output .= '</div>';
         endwhile;
         wp_reset_postdata(); // Reset the post data
-    else :
+    else:
         $output .= '<div class="no-properties-container">';
         if (esc_attr($atts['lang']) == 'en') {
             $output .= '<p>No similar properties found.</p>';
@@ -704,11 +707,11 @@ function latest_properties_by_type_shortcode($atts)
 {
     // Extract shortcode attributes
     $atts = shortcode_atts(array(
-        'post_type'      => 'property',
+        'post_type' => 'property',
         'posts_per_page' => 3,
-        'order'          => 'DESC',
-        'property_type'  => '',   // e.g., Condo
-        'lang'           => 'en',
+        'order' => 'DESC',
+        'property_type' => '',   // e.g., Condo
+        'lang' => 'en',
     ), $atts);
 
     // Get the current post ID
@@ -721,119 +724,120 @@ function latest_properties_by_type_shortcode($atts)
         $property_types = array_map('trim', explode(',', $atts['property_type']));
 
         $meta_query[] = array(
-            'key'     => $atts['lang'] === 'en' ? 'general_property_type' : 'general_property_type_ja',
-            'value'   => count($property_types) > 1 ? $property_types : $property_types[0],
+            'key' => $atts['lang'] === 'en' ? 'general_property_type' : 'general_property_type_ja',
+            'value' => count($property_types) > 1 ? $property_types : $property_types[0],
             'compare' => count($property_types) > 1 ? 'IN' : '='
         );
     }
-	// START Add availability filter: true or null 25/10/03
-	$meta_query[] = array(
-		'relation' => 'OR',
-		array(
-			'key'     => 'general_is_available',
-			'value'   => '1',
-			'compare' => '=',
-		),
-		array(
-			'key'     => 'general_is_available',
-			'compare' => 'NOT EXISTS',
-		),
-	);
-	// END Add availability filter: true or null 25/10/03
+    // START Add availability filter: true or null 25/10/03
+    $meta_query[] = array(
+        'relation' => 'OR',
+        array(
+            'key' => 'general_is_available',
+            'value' => '1',
+            'compare' => '=',
+        ),
+        array(
+            'key' => 'general_is_available',
+            'compare' => 'NOT EXISTS',
+        ),
+    );
+    // END Add availability filter: true or null 25/10/03
 
     // Define the query arguments
     $args = array(
-        'post_type'      => $atts['post_type'],
+        'post_type' => $atts['post_type'],
         'posts_per_page' => $atts['posts_per_page'],
-        'post__not_in'   => array($current_post_id),
-        'orderby'        => 'date',
-        'order'          => $atts['order'],
-        'meta_query'     => $meta_query,
+        'post__not_in' => array($current_post_id),
+        'orderby' => 'date',
+        'order' => $atts['order'],
+        'meta_query' => $meta_query,
     );
 
     $query = new WP_Query($args);
-	
-	// START add get posts if queried posts is less than 3 25/10/03
-	$posts = $query->posts;
-	$found_count = count($posts);
-	if ($found_count < $atts['posts_per_page']) {
-		$remaining = $atts['posts_per_page'] - $found_count;
-		echo '<script>';
-		echo 'console.log("IF STARTED");';
-		echo '</script>';
 
-		// Step 3: Query unavailable posts (is_available = 0) excluding already found posts
-		$unavailable_meta_query = $meta_query;
-		$meta_array_counts = count($meta_query);
-		if($meta_array_counts > 1) {
-			$meta_query[1] = [
-			'key'     => 'general_is_available',
-			'value'   => '0',
-			'compare' => '=',
-			];
-		}
-		$args_unavailable = array(
-			'post_type'      => $atts['post_type'],
-			'posts_per_page' => $remaining,
-			'post__not_in'   => array($current_post_id),
-			'orderby'        => 'date',
-			'order'          => $atts['order'],
-			'meta_query'     => $meta_query,
-		);
+    // START add get posts if queried posts is less than 3 25/10/03
+    $posts = $query->posts;
+    $found_count = count($posts);
+    if ($found_count < $atts['posts_per_page']) {
+        $remaining = $atts['posts_per_page'] - $found_count;
+        echo '<script>';
+        echo 'console.log("IF STARTED");';
+        echo '</script>';
 
-		$unavailable_query = new WP_Query($args_unavailable);
-		echo '<script>';
-		echo 'console.log(' . json_encode($unavailable_query) . ');';
-		echo '</script>';
+        // Step 3: Query unavailable posts (is_available = 0) excluding already found posts
+        $unavailable_meta_query = $meta_query;
+        $meta_array_counts = count($meta_query);
+        if ($meta_array_counts > 1) {
+            $meta_query[1] = [
+                'key' => 'general_is_available',
+                'value' => '0',
+                'compare' => '=',
+            ];
+        }
+        $args_unavailable = array(
+            'post_type' => $atts['post_type'],
+            'posts_per_page' => $remaining,
+            'post__not_in' => array($current_post_id),
+            'orderby' => 'date',
+            'order' => $atts['order'],
+            'meta_query' => $meta_query,
+        );
 
-		// Step 4: Merge posts
-		$posts = array_merge($posts, $unavailable_query->posts);
-			echo '<script>';
-		echo 'console.log(' . json_encode($posts) . ');';
-		echo '</script>';
-	}
-	$query->posts = $posts;
-	$query->post_count = count($posts);
-	$query->found_posts = count($posts);
-	$query->max_num_pages = count($posts);
+        $unavailable_query = new WP_Query($args_unavailable);
+        echo '<script>';
+        echo 'console.log(' . json_encode($unavailable_query) . ');';
+        echo '</script>';
 
-	wp_reset_postdata();
-	echo '<script>';
-		echo 'console.log(' . json_encode($query) . ');';
-		echo '</script>';
+        // Step 4: Merge posts
+        $posts = array_merge($posts, $unavailable_query->posts);
+        echo '<script>';
+        echo 'console.log(' . json_encode($posts) . ');';
+        echo '</script>';
+    }
+    $query->posts = $posts;
+    $query->post_count = count($posts);
+    $query->found_posts = count($posts);
+    $query->max_num_pages = count($posts);
 
-	// END add get posts if queried posts is less than 3 25/10/03
+    wp_reset_postdata();
+    echo '<script>';
+    echo 'console.log(' . json_encode($query) . ');';
+    echo '</script>';
+
+    // END add get posts if queried posts is less than 3 25/10/03
 
     ob_start();
     echo '<div class="latest-properties-by-type">';
 
-    if ($query->have_posts()) :
-        while ($query->have_posts()) : $query->the_post();
-            $general_layout     = get_field('general_layout');
-            $general_title      = get_field('general_title');
-            $general_price      = get_field('general_price');
-            $general_sub_title  = get_field('general_sub_title');
+    if ($query->have_posts()):
+        while ($query->have_posts()):
+            $query->the_post();
+            $general_layout = get_field('general_layout');
+            $general_title = get_field('general_title');
+            $general_price = get_field('general_price');
+            $general_sub_title = get_field('general_sub_title');
 
             echo '<div class="property-card">';
             echo '<a href="' . get_the_permalink() . '">';
 
             // START EDIT add class for close 25/10/03
-			$general = get_field('general', get_the_ID());
-			$is_available = $general['is_available'] ?? null;
-			$lang = $general['language'] ?? null; // en or ja
-			$class = 'property-image';
+            $general = get_field('general', get_the_ID());
+            $is_available = $general['is_available'] ?? null;
+            $lang = $general['language'] ?? null; // en or ja
+            $class = 'property-image';
 
             if (has_post_thumbnail()) {
-				if (!$is_available) {
-					$class .= ' not_available ' . esc_attr($lang);
-				}
+                if (!$is_available) {
+                    $class .= ' not_available ' . esc_attr($lang);
+                }
 
-				echo '<div class="' . esc_attr($class) . '">';
-			
+                echo '<div class="' . esc_attr($class) . '">';
+
                 echo get_the_post_thumbnail(get_the_ID(), 'full', array('class' => 'property-thumbnail'));
                 echo '</div>';
             }
-			// END EDIT add class for close 25/10/03
+            // END EDIT add class for close 25/10/03
 
 
             echo '<div class="property-wrap">';
@@ -862,7 +866,7 @@ function latest_properties_by_type_shortcode($atts)
             echo '</div>'; // .property-card
         endwhile;
         wp_reset_postdata();
-    else :
+    else:
         echo '<div class="no-properties-container">';
         echo $atts['lang'] === 'en' ? '<p>No properties found.</p>' : '<p>物件は見つかりませんでした。</p>';
         echo '</div>';
@@ -931,7 +935,7 @@ function floor_plan_tabs_shortcode($atts)
 {
     // Extract shortcode attributes
     $atts = shortcode_atts(array(
-        'lang'           => 'en',      // Language attribute (en or ja)
+        'lang' => 'en',      // Language attribute (en or ja)
     ), $atts);
 
     // Start output buffering
@@ -1061,9 +1065,9 @@ function acf_number_shortcode($atts)
 {
     $atts = shortcode_atts(array(
         'field_name' => '',
-        'post_id'    => '',
-        'decimals'   => 0,
-        'currency'   => '', // Optional: Currency symbol
+        'post_id' => '',
+        'decimals' => 0,
+        'currency' => '', // Optional: Currency symbol
     ), $atts);
 
     $field_value = get_field($atts['field_name'], $atts['post_id']);
@@ -1071,7 +1075,7 @@ function acf_number_shortcode($atts)
     if (is_numeric($field_value)) {
         $formatted_value = number_format($field_value, $atts['decimals']);
         if (!empty($atts['currency'])) {
-            $formatted_value =  '<h5 style="padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;margin-top:0px;margin-bottom:0px;margin-left:0px;margin-right:0px;" >' . $formatted_value . " " . $atts['currency'] . "</h5>";
+            $formatted_value = '<h5 style="padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px;margin-top:0px;margin-bottom:0px;margin-left:0px;margin-right:0px;" >' . $formatted_value . " " . $atts['currency'] . "</h5>";
         }
         return $formatted_value;
     } else {
@@ -1137,7 +1141,7 @@ function property_amenities_list_shortcode($atts)
 
     // Extract shortcode attributes
     $atts = shortcode_atts(array(
-        'lang'           => 'en',      // Language attribute (en or ja)
+        'lang' => 'en',      // Language attribute (en or ja)
     ), $atts);
 
     // Start output buffering
@@ -1148,67 +1152,67 @@ function property_amenities_list_shortcode($atts)
     $toilets = get_field('property_amenities_toilets');
     $property_type = esc_attr($atts['lang']) == 'en' ? get_field('general_property_type') : get_field('general_property_type_ja');
 
-    $landSizeProps = ['holidayHome','house'];
+    $landSizeProps = ['holidayHome', 'house'];
 
     if (in_array($property_type, $landSizeProps, true)) {
-            $land_size = get_field('general_land_size');
-    }else{
-            $land_size = get_field('general_total_floor_size');
+        $land_size = get_field('general_land_size');
+    } else {
+        $land_size = get_field('general_total_floor_size');
     }
 
 
-    if($property_type)
+    if ($property_type)
 
 
-    // Check if any field has a value
-    if ($bedrooms || $toilets || $land_size) {
-        echo '<ul class="property-amenities-list">';
+        // Check if any field has a value
+        if ($bedrooms || $toilets || $land_size) {
+            echo '<ul class="property-amenities-list">';
 
-        if ($bedrooms) {
-            echo '<li>' . esc_html($bedrooms);
-            if (esc_attr($atts['lang']) == 'en') {
-                echo ' Bedrooms</li>';
-                if ($bedrooms > 1) {
+            if ($bedrooms) {
+                echo '<li>' . esc_html($bedrooms);
+                if (esc_attr($atts['lang']) == 'en') {
                     echo ' Bedrooms</li>';
+                    if ($bedrooms > 1) {
+                        echo ' Bedrooms</li>';
+                    } else {
+                        echo ' Bedroom</li>';
+                    }
                 } else {
-                    echo ' Bedroom</li>';
+                    echo ' LDK</li>';
                 }
-            } else {
-                echo ' LDK</li>';
             }
-        }
 
-        if ($toilets && $bedrooms) {
-            echo '<li class="property-amenities-border-left">' . esc_html($toilets);
-            if (esc_attr($atts['lang']) == 'en') {
-                if ($toilets > 1) {
+            if ($toilets && $bedrooms) {
+                echo '<li class="property-amenities-border-left">' . esc_html($toilets);
+                if (esc_attr($atts['lang']) == 'en') {
+                    if ($toilets > 1) {
+                        echo ' Baths</li>';
+                    } else {
+                        echo ' Bath</li>';
+                    }
+                } else {
+                    echo ' トイレ</li>';
+                }
+            }
+
+            if ($toilets && !$bedrooms) {
+                echo '<li>' . esc_html($toilets);
+
+                if (esc_attr($atts['lang']) == 'en') {
                     echo ' Baths</li>';
                 } else {
-                    echo ' Bath</li>';
+                    echo ' トイレ</li>';
                 }
-            } else {
-                echo ' トイレ</li>';
             }
-        }
 
-        if ($toilets && !$bedrooms) {
-            echo '<li>' . esc_html($toilets);
-
-            if (esc_attr($atts['lang']) == 'en') {
-                echo ' Baths</li>';
-            } else {
-                echo ' トイレ</li>';
+            if ($land_size && ($toilets || $bedrooms)) {
+                echo '<li class="property-amenities-border-left">' . esc_html($land_size) . ' m²</li>';
+            } else if ($land_size && (!$toilets || !$bedrooms)) {
+                echo '<li>' . esc_html($land_size) . ' m²</li>';
             }
-        }
 
-        if ($land_size && ($toilets || $bedrooms)) {
-            echo '<li class="property-amenities-border-left">' . esc_html($land_size) . ' m²</li>';
-        } else if ($land_size && (!$toilets || !$bedrooms)) {
-            echo '<li>' . esc_html($land_size) . ' m²</li>';
+            echo '</ul>'; // Close .property-amenities-list
         }
-
-        echo '</ul>'; // Close .property-amenities-list
-    }
 
     // Return the output
     return ob_get_clean();
@@ -1271,15 +1275,19 @@ END reading time function.
 
 function properties_list_shortcode($atts)
 {
+    $is_inquiry = isset($atts['is_inquiry'])
+        ? filter_var($atts['is_inquiry'], FILTER_VALIDATE_BOOLEAN)
+        : true;  // <-- default true, if you want default false change here
+
     // Extract shortcode attributes
     $atts = shortcode_atts(array(
-        'post_type'      => 'property', // Default post type
+        'post_type' => 'property', // Default post type
         'posts_per_page' => -1,          // Get all posts (we'll handle pagination)
-        'orderby'        => 'date',     // Order by date to get the latest posts first
-        'order'         => 'DESC',      // Display in descending order (newest first)
-        'taxonomy'       => '',         // Taxonomy name (e.g., 'property_type')
-        'term'           => '',         // Taxonomy term slug (e.g., 'condo')
-        'lang'           => 'en',      // Language attribute (en or ja)
+        'orderby' => 'date',     // Order by date to get the latest posts first
+        'order' => 'DESC',      // Display in descending order (newest first)
+        'taxonomy' => '',         // Taxonomy name (e.g., 'property_type')
+        'term' => '',         // Taxonomy term slug (e.g., 'condo')
+        'lang' => 'en',      // Language attribute (en or ja)
     ), $atts);
 
     // Get the current post ID
@@ -1287,9 +1295,9 @@ function properties_list_shortcode($atts)
 
     // Define the query arguments
     $args = array(
-        'post_type'      => $atts['post_type'], // Use dynamic post type
+        'post_type' => $atts['post_type'], // Use dynamic post type
         'posts_per_page' => $atts['posts_per_page'], // Number of posts to display
-        'orderby'        => $atts['orderby'], // Randomize the results (optional)
+        'orderby' => $atts['orderby'], // Randomize the results (optional)
     );
 
     // Add taxonomy filter if provided
@@ -1297,8 +1305,8 @@ function properties_list_shortcode($atts)
         $args['tax_query'] = array(
             array(
                 'taxonomy' => $atts['taxonomy'], // Taxonomy name (e.g., 'property_type')
-                'field'    => 'slug',            // Use term slug
-                'terms'    => $atts['term'],     // Term slug (e.g., 'condo')
+                'field' => 'slug',            // Use term slug
+                'terms' => $atts['term'],     // Term slug (e.g., 'condo')
             ),
         );
     }
@@ -1308,39 +1316,41 @@ function properties_list_shortcode($atts)
 
     // Start the output
     $output = '<div class="similar-properties" data-lang="' . esc_attr($atts['lang']) . '" data-offset="6">';
-	
-	// START ADD Sorting  functionality 25/10/03
-	$sorted_posts = $query->posts;
 
-	usort($sorted_posts, function($a, $b) {
-		$a_raw = get_field('general_is_available', $a->ID);
-		$b_raw = get_field('general_is_available', $b->ID);
+    // START ADD Sorting  functionality 25/10/03
+    $sorted_posts = $query->posts;
 
-		$a_val = ($a_raw === false || $a_raw === '0' || $a_raw === 0) ? false : true;
-		$b_val = ($b_raw === false || $b_raw === '0' || $b_raw === 0) ? false : true;
+    usort($sorted_posts, function ($a, $b) {
+        $a_raw = get_field('general_is_available', $a->ID);
+        $b_raw = get_field('general_is_available', $b->ID);
 
-		if ($a_val === $b_val) return 0;
+        $a_val = ($a_raw === false || $a_raw === '0' || $a_raw === 0) ? false : true;
+        $b_val = ($b_raw === false || $b_raw === '0' || $b_raw === 0) ? false : true;
 
-		return $a_val ? -1 : 1;
-	});
+        if ($a_val === $b_val)
+            return 0;
 
-	// Replace the query's post list
-	$query->posts = $sorted_posts;
-	
-	// END ADD Sorting  functionality 25/10/03
+        return $a_val ? -1 : 1;
+    });
+
+    // Replace the query's post list
+    $query->posts = $sorted_posts;
+
+    // END ADD Sorting  functionality 25/10/03
 
     // Check if there are posts
-    if ($query->have_posts()) :
+    if ($query->have_posts()):
         $count = 0;
-        while ($query->have_posts()) : $query->the_post();
+        while ($query->have_posts()):
+            $query->the_post();
             $count++;
             // Only show first 6 properties initially
             $style = $count > 6 ? ' style="display:none;"' : '';
 
             // Get the ACF field values
             $general_layout = get_field('general_layout');
-            $general_title  = get_field('general_title');
-            $general_price  = get_field('general_price');
+            $general_title = get_field('general_title');
+            $general_price = get_field('general_price');
             $general_sub_title = get_field('general_sub_title');
             // Start the property card with a link to the property details page
             $output .= '<div class="property-card"' . $style . ' data-index="' . $count . '">';
@@ -1350,24 +1360,24 @@ function properties_list_shortcode($atts)
             // START EDIT Added for Close event for property/categories 25/10/03 
             // Display the featured image
             // Get general ACF data
-			$general = get_field('general', get_the_ID());
-			$is_available = $general['is_available'] ?? null;
-			$lang = $general['language'] ?? null; // en or ja
+            $general = get_field('general', get_the_ID());
+            $is_available = $general['is_available'] ?? null;
+            $lang = $general['language'] ?? null; // en or ja
 
-			if (has_post_thumbnail()) {
-				// Build the class for property-image div
-				$class = 'property-image';
-				if (!$is_available) {
-					$class .= ' not_available ' . esc_attr($lang);
-				}
+            if (has_post_thumbnail()) {
+                // Build the class for property-image div
+                $class = 'property-image';
+                if (!$is_available) {
+                    $class .= ' not_available ' . esc_attr($lang);
+                }
 
-				// Append the div with proper class directly
-				$output .= '<div class="' . $class . '">';
-				$output .= get_the_post_thumbnail(get_the_ID(), 'full', array('class' => 'property-thumbnail'));
-				$output .= '</div>';
-			}
+                // Append the div with proper class directly
+                $output .= '<div class="' . $class . '">';
+                $output .= get_the_post_thumbnail(get_the_ID(), 'full', array('class' => 'property-thumbnail'));
+                $output .= '</div>';
+            }
 
-			// END EDIT Added for Close event for property/categories 25/10/03
+            // END EDIT Added for Close event for property/categories 25/10/03
 
             $output .= '<div class="property-wrap">';
 
@@ -1394,7 +1404,9 @@ function properties_list_shortcode($atts)
             $output .= '</a>';
 
             // Add "Inquire Now" button
-            $output .= get_inquiry_button_html(get_the_ID(), esc_attr($atts['lang']));
+            if ($is_inquiry) {
+                $output .= get_inquiry_button_html(get_the_ID(), esc_attr($atts['lang']));
+            }
             // End the property wrap
             $output .= '</div>';
 
@@ -1410,7 +1422,7 @@ function properties_list_shortcode($atts)
         }
 
         wp_reset_postdata(); // Reset the post data
-    else :
+    else:
         $output .= '<div class="no-properties-container">';
         if (esc_attr($atts['lang']) == 'en') {
             $output .= '<p>No properties found.</p>';
@@ -1506,11 +1518,13 @@ function acf_checkbox_shortcode($atts)
     $values = get_field($atts['field'], $atts['post_id']);
 
     // Check if field has values
-    if (empty($values) || !is_array($values)) return '';
+    if (empty($values) || !is_array($values))
+        return '';
 
     // Get the field object to access label names
     $field_object = get_field_object($atts['field']);
-    if (!$field_object || empty($field_object['choices'])) return '';
+    if (!$field_object || empty($field_object['choices']))
+        return '';
 
     $choices = $field_object['choices']; // All possible checkbox labels
     $total_items = count($values);
@@ -1678,11 +1692,13 @@ function display_feature_amenities_shortcode($atts)
     $values = get_field($atts['field'], $atts['post_id']);
 
     // Check if field has values
-    if (empty($values) || !is_array($values)) return '';
+    if (empty($values) || !is_array($values))
+        return '';
 
     // Get the field object to access label names
     $field_object = get_field_object($atts['field']);
-    if (!$field_object || empty($field_object['choices'])) return '';
+    if (!$field_object || empty($field_object['choices']))
+        return '';
 
     $current_lang = get_current_user_language();
     $multilingual_options = get_multilingual_amenities_options();
@@ -1736,7 +1752,7 @@ function multilingual_post_date_shortcode()
         default: // English or others
             $date_format = 'F j, Y';
 
-            $prefix = is_singular() ?  'Posted on ' : '';
+            $prefix = is_singular() ? 'Posted on ' : '';
             break;
     }
 
@@ -1907,13 +1923,15 @@ function display_author_profile_shortcode()
 {
     global $post;
 
-    if (!$post) return '';
+    if (!$post)
+        return '';
 
-    $author_id    = $post->post_author;
-    $author_name  = get_the_author_meta('display_name', $author_id);
-    $author_bio   = get_the_author_meta('description', $author_id);
+    $author_id = $post->post_author;
+    $author_name = get_the_author_meta('display_name', $author_id);
+    $author_bio = get_the_author_meta('description', $author_id);
 
-    if (empty($author_bio)) return '';
+    if (empty($author_bio))
+        return '';
 
     $author_photo = get_field('author_photo', 'user_' . $author_id);
 
@@ -1926,7 +1944,7 @@ function display_author_profile_shortcode()
 
     $heading = match ($current_lang) {
         'ja', 'jp' => '<h2 class="author-header"><span class="mrl-orange">ラ</span>イターのご紹介</h2>',
-        default    => '<h2 class="author-header"><span class="mrl-orange">A</span>bout the Author</h2>',
+        default => '<h2 class="author-header"><span class="mrl-orange">A</span>bout the Author</h2>',
     };
 
     ob_start();
@@ -1944,53 +1962,58 @@ function display_author_profile_shortcode()
         </div>
     </div>
 
-<?php
+    <?php
     return ob_get_clean();
 }
 add_shortcode('author_profile', 'display_author_profile_shortcode');
 
 // START ADD Automated prepending or deleting string from ACF attribute 25/10/03
 
-add_action('acf/save_post', function($post_id) {
-	// This will be automatically executed when property post is updated.
+add_action('acf/save_post', function ($post_id) {
+    // This will be automatically executed when property post is updated.
 
-	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-	if (get_post_type($post_id) !== 'property') return; // return if the post is not property 
-	if (!is_admin()) return;
-	
-	// Bail early if ACF is not saving this post
-	if (!isset($_POST['acf'])) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+    if (get_post_type($post_id) !== 'property')
+        return; // return if the post is not property 
+    if (!is_admin())
+        return;
 
-	$is_available = get_field('general_is_available', $post_id);
-	$language     = get_field('general_language', $post_id); // 'en' or 'ja'
-	$title        = get_field('general_title', $post_id);   // ACF title field
+    // Bail early if ACF is not saving this post
+    if (!isset($_POST['acf']))
+        return;
 
-	$label = ($language === 'ja') ? '【成約済み】' : '【CLOSED】';
+    $is_available = get_field('general_is_available', $post_id);
+    $language = get_field('general_language', $post_id); // 'en' or 'ja'
+    $title = get_field('general_title', $post_id);   // ACF title field
 
-	// Remove existing labels
-	$clean_title = preg_replace('/^(【CLOSED】|【成約済み】)/u', '', $title);
+    $label = ($language === 'ja') ? '【成約済み】' : '【CLOSED】';
 
-	if (!$is_available) {
-		$new_title = $label . $clean_title;
-	} else {
-		$new_title = $clean_title;
-	}
+    // Remove existing labels
+    $clean_title = preg_replace('/^(【CLOSED】|【成約済み】)/u', '', $title);
 
-	if ($new_title !== $title) {
-		update_field('general_title', $new_title, $post_id); // update ACF title
-	}
+    if (!$is_available) {
+        $new_title = $label . $clean_title;
+    } else {
+        $new_title = $clean_title;
+    }
 
-	$post = get_post($post_id);
+    if ($new_title !== $title) {
+        update_field('general_title', $new_title, $post_id); // update ACF title
+    }
 
-	if ($new_title !== $post->post_title) {
-		wp_update_post([ 'ID' => $post_id, 'post_title' => $new_title, ]); // update post title
-	}
+    $post = get_post($post_id);
+
+    if ($new_title !== $post->post_title) {
+        wp_update_post(['ID' => $post_id, 'post_title' => $new_title,]); // update post title
+    }
 }, 20);
 
 // END ADD Automated prepending or deleting string from ACF attribute 25/10/03
 
 // START ADD inquiry button attached to each property in property list
-function get_inquiry_button_html($post_id = null, $lang = 'en') {
+function get_inquiry_button_html($post_id = null, $lang = 'en')
+{
     if (!$post_id) {
         $post_id = get_the_ID();
     }
