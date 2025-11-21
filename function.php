@@ -832,7 +832,8 @@ function latest_properties_by_type_shortcode($atts)
                     $class .= ' not_available ' . esc_attr($lang);
                 }
 
-                echo '<div class="' . esc_attr($class) . '">';
+                $post_id = get_the_ID(); // current post ID
+                echo '<div class="' . esc_attr($class) . '"' . get_post_date_attribute($post_id) . '>';
 
                 echo get_the_post_thumbnail(get_the_ID(), 'full', array('class' => 'property-thumbnail'));
                 echo '</div>';
@@ -1372,7 +1373,9 @@ function properties_list_shortcode($atts)
                 }
 
                 // Append the div with proper class directly
-                $output .= '<div class="' . $class . '">';
+                $output .= '<div class="' . $class . '"'
+                    . get_post_date_attribute(get_the_ID())
+                    . '>';
                 $output .= get_the_post_thumbnail(get_the_ID(), 'full', array('class' => 'property-thumbnail'));
                 $output .= '</div>';
             }
@@ -2023,3 +2026,29 @@ function get_inquiry_button_html($post_id = null, $lang = 'en')
     return $button_html;
 }
 // END ADD inquiry button attached to each property in property list
+
+/**
+ * Returns a HTML data attribute containing the post's publish date in ISO 8601 format.
+ *
+ * This is useful for adding a post date to an HTML element so that JavaScript
+ * can easily access and manipulate it, e.g., comparing to the current date,
+ * calculating the age of the post, or displaying "new" labels.
+ *
+ * Example output:
+ * <div class="property-card" data-post-date="2025-01-27T15:12:00+09:00"></div>
+ *
+ * @param int $post_id The ID of the WordPress post.
+ * @return string A string like ' data-post-date="2025-01-27T15:12:00+09:00"' 
+ *                or an empty string if $post_id is invalid.
+ */
+function get_post_date_attribute($post_id)
+{
+    if (!$post_id)
+        return '';
+
+    // Get post date in ISO 8601 format (preferred for JS)
+    $post_date = get_the_date('c', $post_id);
+
+    // Return as a safe HTML attribute
+    return ' data-post-date="' . esc_attr($post_date) . '"';
+}
