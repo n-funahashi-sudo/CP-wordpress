@@ -743,27 +743,27 @@ function latest_properties_by_type_shortcode($atts)
         ),
     );
     // END Add availability filter: true or null 25/10/03
+    $pickedup_query = get_pickedup_properties($atts['property_type'], 'property', $atts['lang'], $atts['posts_per_page']);
+    $pickedup_property_ids = wp_list_pluck($pickedup_query->posts, 'ID');
 
-    // Define the query arguments
     $args = array(
         'post_type' => $atts['post_type'],
-        'posts_per_page' => $atts['posts_per_page'],
-        'post__not_in' => array($current_post_id),
+        'posts_per_page' => $atts['posts_per_page'] - count($pickedup_property_ids),
+        'post__not_in' => array_merge(array($current_post_id), $pickedup_property_ids),
         'orderby' => 'date',
         'order' => $atts['order'],
         'meta_query' => $meta_query,
     );
 
     $query = new WP_Query($args);
+    $query_post = $query->posts;
+    $query = update_query_posts($query, array_merge($pickedup_query->posts, $query_post));
 
     // START add get posts if queried posts is less than 3 25/10/03
     $posts = $query->posts;
     $found_count = count($posts);
     if ($found_count < $atts['posts_per_page']) {
         $remaining = $atts['posts_per_page'] - $found_count;
-        echo '<script>';
-        echo 'console.log("IF STARTED");';
-        echo '</script>';
 
         // Step 3: Query unavailable posts (is_available = 0) excluding already found posts
         $unavailable_meta_query = $meta_query;
@@ -801,9 +801,6 @@ function latest_properties_by_type_shortcode($atts)
     $query->max_num_pages = count($posts);
 
     wp_reset_postdata();
-    echo '<script>';
-    echo 'console.log(' . json_encode($query) . ');';
-    echo '</script>';
 
     // END add get posts if queried posts is less than 3 25/10/03
 
@@ -833,6 +830,11 @@ function latest_properties_by_type_shortcode($atts)
                 }
 
                 $post_id = get_the_ID(); // current post ID
+                // Get "picked-up-property" class if applicable
+                $status_class = get_property_status_class($post_id);
+                if ($status_class) {
+                    $class .= ' ' . $status_class;
+                }
                 echo '<div class="' . esc_attr($class) . '"' . get_post_date_attribute($post_id) . '>';
 
                 echo get_the_post_thumbnail(get_the_ID(), 'full', array('class' => 'property-thumbnail'));
@@ -1278,7 +1280,7 @@ function properties_list_shortcode($atts)
 {
     $is_inquiry = isset($atts['is_inquiry'])
         ? filter_var($atts['is_inquiry'], FILTER_VALIDATE_BOOLEAN)
-        : true;  // <-- default true, if you want default false change here
+        : true;  // <-- default true
 
     // Extract shortcode attributes
     $atts = shortcode_atts(array(
@@ -1322,17 +1324,34 @@ function properties_list_shortcode($atts)
     $sorted_posts = $query->posts;
 
     usort($sorted_posts, function ($a, $b) {
-        $a_raw = get_field('general_is_available', $a->ID);
-        $b_raw = get_field('general_is_available', $b->ID);
+        // Assume 'general' is the ACF group field
+        $a_general = get_field('general', $a->ID);
+        $b_general = get_field('general', $b->ID);
 
-        $a_val = ($a_raw === false || $a_raw === '0' || $a_raw === 0) ? false : true;
-        $b_val = ($b_raw === false || $b_raw === '0' || $b_raw === 0) ? false : true;
+        $a_pickedup = $a_general['is_pickedup'] ?? false;
+        $b_pickedup = $b_general['is_pickedup'] ?? false;
 
-        if ($a_val === $b_val)
-            return 0;
+        $a_available = $a_general['is_available'] ?? false;
+        $b_available = $b_general['is_available'] ?? false;
 
-        return $a_val ? -1 : 1;
+        $a_pickedup = filter_var($a_pickedup, FILTER_VALIDATE_BOOLEAN);
+        $b_pickedup = filter_var($b_pickedup, FILTER_VALIDATE_BOOLEAN);
+        $a_available = filter_var($a_available, FILTER_VALIDATE_BOOLEAN);
+        $b_available = filter_var($b_available, FILTER_VALIDATE_BOOLEAN);
+
+        // If not available, override picked-up
+        $a_priority = !$a_available ? 2 : ($a_pickedup ? 0 : 1);
+        $b_priority = !$b_available ? 2 : ($b_pickedup ? 0 : 1);
+
+        // First by priority
+        if ($a_priority !== $b_priority) {
+            return $a_priority <=> $b_priority;
+        }
+
+        // If same priority, latest date first
+        return strtotime($b->post_date) <=> strtotime($a->post_date);
     });
+
 
     // Replace the query's post list
     $query->posts = $sorted_posts;
@@ -1370,6 +1389,11 @@ function properties_list_shortcode($atts)
                 $class = 'property-image';
                 if (!$is_available) {
                     $class .= ' not_available ' . esc_attr($lang);
+                }
+                $post_id = get_the_ID();
+                $status_class = get_property_status_class($post_id);
+                if ($status_class) {
+                    $class .= ' ' . $status_class;
                 }
 
                 // Append the div with proper class directly
@@ -2052,3 +2076,123 @@ function get_post_date_attribute($post_id)
     // Return as a safe HTML attribute
     return ' data-post-date="' . esc_attr($post_date) . '"';
 }
+
+/**
+ * Get "picked-up" property posts based on property type and language.
+ *
+ * This function returns a WP_Query object containing posts where:
+ *  - post_type matches the provided $post_type
+ *  - general_is_pickedup (boolean ACF field) = 1
+ *  - property type matches (optional)
+ * 
+ * It also prints useful console logs in the browser for debugging.
+ *
+ * @param string $property_type     Comma-separated property types (e.g., "house,condo")
+ * @param string $post_type         Custom post type (default: "property")
+ * @param string $lang              Language ("en" or "ja") to match the correct ACF field
+ * @param int    $posts_per_page    How many picked-up posts to fetch
+ *
+ * @return WP_Query                 WP_Query object containing picked-up posts
+ */
+
+function get_pickedup_properties($property_type = '', $post_type = 'property', $lang = 'en', $posts_per_page = 3)
+{
+
+    // Build meta query
+    $meta_query = array();
+
+    if (!empty($property_type)) {
+        $property_types = array_map('trim', explode(',', $property_type));
+
+        $meta_query[] = array(
+            'key' => $lang === 'en' ? 'general_property_type' : 'general_property_type_ja',
+            'value' => count($property_types) > 1 ? $property_types : $property_types[0],
+            'compare' => count($property_types) > 1 ? 'IN' : '='
+        );
+    }
+
+    // Boolean field
+    $meta_query[] = array(
+        'key' => 'general_is_pickedup',
+        'value' => 1,
+        'compare' => '='
+    );
+
+    $meta_query[] = array(
+        'key' => 'general_is_available',
+        'value' => 1,
+        'compare' => '='
+    );
+
+    // Build WP_Query args
+    $args = array(
+        'post_type' => $post_type,
+        'posts_per_page' => $posts_per_page,
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'meta_query' => $meta_query,
+    );
+
+    $query = new WP_Query($args);
+
+    // Prepare posts for logging
+    $posts_for_log = array();
+    foreach ($query->posts as $p) {
+        $posts_for_log[] = [
+            'ID' => $p->ID,
+            'title' => get_the_title($p->ID)
+        ];
+    }
+
+    return $query;
+}
+
+/**
+ * Replaces the posts in a WP_Query object with a custom array of posts.
+ *
+ * This function updates the WP_Query object so that it behaves as if it originally
+ * queried only the posts provided in $new_posts. It also updates internal counters
+ * and resets the loop pointer to ensure the query works properly in loops.
+ *
+ * @param WP_Query $query     The original WP_Query object to modify.
+ * @param array    $new_posts An array of WP_Post objects to replace the original query posts.
+ *
+ * @return WP_Query The modified WP_Query object with posts replaced by $new_posts.
+ *
+ * @example
+ * $merged_posts = array_merge($pickedup_posts, $latest_posts);
+ * $query = update_query_posts($query, $merged_posts);
+ */
+function update_query_posts($query, $new_posts)
+{
+    // Replace posts
+    $query->posts = $new_posts;
+
+    // Update counts
+    $query->post_count = count($new_posts);
+    $query->found_posts = count($new_posts);
+    $query->max_num_pages = 1;
+
+    // Reset internal loop pointer
+    $query->rewind_posts();
+
+    return $query;
+}
+
+
+
+function get_property_status_class($post_id)
+{
+    $general = get_field('general', get_the_ID());
+    $is_pickedup = $general['is_pickedup'] ?? null;
+    $is_available = $general['is_available'] ?? null;
+
+
+    // If both conditions are true → return class
+    if ($is_pickedup && $is_available) {
+        return 'picked-up-property';
+    }
+
+    return '';
+}
+
