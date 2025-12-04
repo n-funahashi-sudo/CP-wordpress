@@ -75,10 +75,33 @@ function property_details_header_shortcode($atts)
     $price_format = "";
 
     if ($price) {
-        $prefix = "¥ ";
+
+        // Determine price prefix based on taxonomy
+        // Assume the post has a location-type term assigned
+        $terms = wp_get_post_terms(get_the_ID(), 'location-type', array('fields' => 'slugs'));
+
+        $is_abroad = false;
+
+        if (!empty($terms)) {
+            foreach ($terms as $term_slug) {
+                if (is_under_abroad('location-type', $term_slug)) {
+                    $is_abroad = true;
+                    break; // one is enough
+                }
+            }
+        }
+
+        if ($is_abroad) {
+            $prefix = "$ ";
+        } else {
+            $prefix = "¥ ";
+        }
+
+        // Format price
         $decimals = 0;
         $price_format = format_number_with_commas($price, $decimals);
     }
+    $selected_currency = $is_abroad ? 'USD' : 'JPY';
 
 
     echo '<div class="property-header-container">';
@@ -107,12 +130,12 @@ function property_details_header_shortcode($atts)
     echo '</div>'; // .property-header-price
     echo '<div class="property-header-currency">';
     echo '<select id="currency-selector">
-    <option value="JPY" selected>JPY</option>
-    <option value="USD">USD</option>
-    <option value="EUR">EUR</option>
-    <option value="CNY">CNY</option>
-    <option value="CAD">CAD</option>
-    <option value="AUD">AUD</option>
+    <option value="JPY"' . ($selected_currency === 'JPY' ? ' selected' : '') . '>JPY</option>
+    <option value="USD"' . ($selected_currency === 'USD' ? ' selected' : '') . '>USD</option>
+    <option value="EUR"' . ($selected_currency === 'EUR' ? ' selected' : '') . '>EUR</option>
+    <option value="CNY"' . ($selected_currency === 'CNY' ? ' selected' : '') . '>CNY</option>
+    <option value="CAD"' . ($selected_currency === 'CAD' ? ' selected' : '') . '>CAD</option>
+    <option value="AUD"' . ($selected_currency === 'AUD' ? ' selected' : '') . '>AUD</option>
     </select>';
     echo '</div>'; // .property-header-currency
 
@@ -121,7 +144,8 @@ function property_details_header_shortcode($atts)
 
     // Output base price for JS
     echo '<script>
-        const basePriceJPY = ' . intval($price) . ';
+		const basePrice = ' . intval($price) . ';
+    	const baseCurrency = "' . $selected_currency . '";
     </script>';
 
     return ob_get_clean();
@@ -176,34 +200,39 @@ function enqueue_currency_converter_script()
                 const selector = document.getElementById('currency-selector');
                 const priceElement = document.getElementById('converted-price');
 
-                selector.addEventListener('change', async function () {
-                    const currency = this.value;
+                // Parse initial price and currency from the DOM
+                let initialText = priceElement.textContent.trim();
+                let basePrice = parseFloat(initialText.replace(/[^0-9.]/g, '')); // removes currency symbols
+                let currentCurrency = initialText.includes('¥') ? 'JPY' : 'USD'; // detect initial currency (adjust as needed)
 
-                    if (currency === 'JPY') {
-                        priceElement.textContent = '¥ ' + basePriceJPY.toLocaleString();
+                selector.addEventListener('change', async function () {
+                    const targetCurrency = this.value;
+
+                    // If target is same as current, just display base price
+                    if (targetCurrency === currentCurrency) {
+                        if (targetCurrency === 'JPY') {
+                            priceElement.textContent = '¥ ' + basePrice.toLocaleString();
+                        } else {
+                            priceElement.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: targetCurrency }).format(basePrice);
+                        }
                         return;
                     }
 
-                    const url = `https://api.frankfurter.app/latest?amount=${basePriceJPY}&from=JPY&to=${currency}`;
+                    // Fetch conversion from currentCurrency → targetCurrency
+                    const url = `https://api.frankfurter.app/latest?amount=${basePrice}&from=${currentCurrency}&to=${targetCurrency}`;
 
                     try {
                         const response = await fetch(url);
                         const data = await response.json();
-                        const converted = data.rates[currency];
+                        const converted = data.rates[targetCurrency];
 
-                        const formatter = new Intl.NumberFormat('en-US', {
-                            style: 'currency',
-                            currency: currency
-                        });
-
-                        let formatted = formatter.format(converted);
-
-                        // Add a space between symbol and number if needed
-                        if (!formatted.includes(' ')) {
-                            formatted = formatted.replace(/([^\d\s])(\d)/, '$1 $2');
-                        }
-
+                        // Format and display
+                        const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: targetCurrency }).format(converted);
                         priceElement.textContent = formatted;
+
+                        // Update current base for next conversion
+                        currentCurrency = targetCurrency;
+                        basePrice = converted;
                     } catch (error) {
                         console.error('Currency conversion error:', error);
                         priceElement.textContent = 'Conversion failed';
@@ -211,6 +240,7 @@ function enqueue_currency_converter_script()
                 });
             });
         </script>
+
         <?php
     }
 }
@@ -561,8 +591,24 @@ function property_details_shortcode($atts)
         $acf_fields = get_property_label($property_type_ja, 'ja');
         $property_type_label = get_property_type_label($property_type_ja, 'ja');
     }
+    // check the current post is abroad
+    $post_id = get_the_ID();
 
+    $terms = wp_get_post_terms($post_id, 'location-type', array(
+        'fields' => 'all'
+    ));
+    $is_abroad = false;
+
+    if (!empty($terms) && !is_wp_error($terms)) {
+        foreach ($terms as $term) {
+            if ($term->slug === 'abroad') {  // change 'abroad' to the actual slug if different
+                $is_abroad = true;
+                break; // one match is enough
+            }
+        }
+    }
     ob_start();
+
     echo '<div class="property-details">';
 
     foreach ($acf_fields as $field_key => $label) {
@@ -572,6 +618,10 @@ function property_details_shortcode($atts)
             continue;
 
         list($prefix, $formatted_value, $suffix) = format_acf_value($field_key, $value, $lang);
+
+        if ($is_abroad && $field_key === 'general_price') {
+            $prefix = '$';
+        }
 
         echo '<div class="property-detail">';
         echo '<strong>' . esc_html($label) . ':</strong> ';
@@ -1419,7 +1469,13 @@ function properties_list_shortcode($atts)
             }
 
             // Display the general price
-            if ($general_price) {
+            $is_abroad_child = is_under_abroad($atts['taxonomy'], $atts['term']);
+
+            if ($is_abroad_child) {
+                // Price in USD
+                $output .= '<div class="property-price">US$ ' . esc_html(format_number_with_commas($general_price, 0)) . '</div>';
+            } else {
+                // Price in Yen
                 $output .= '<div class="property-price">¥ ' . esc_html(format_number_with_commas($general_price, 0)) . '</div>';
             }
 
@@ -2196,3 +2252,29 @@ function get_property_status_class($post_id)
     return '';
 }
 
+/**
+ * Check if a term's top-level ancestor is "abroad"
+ *
+ * @param string $taxonomy   Taxonomy name (e.g., 'location-type')
+ * @param string $term_slug  Term slug to check
+ * @return bool              True if the top-level ancestor is "abroad", false otherwise
+ */
+function is_under_abroad($taxonomy, $term_slug)
+{
+
+    // Get the term object
+    $term = get_term_by('slug', $term_slug, $taxonomy);
+    if (!$term)
+        return false;
+
+    // Traverse up to the top ancestor
+    $ancestor = $term;
+    while ($ancestor->parent != 0) {
+        $ancestor = get_term($ancestor->parent, $taxonomy);
+        if (!$ancestor)
+            return false; // safety check
+    }
+
+    // Check if the top ancestor slug is "abroad"
+    return ($ancestor->slug === 'abroad');
+}
