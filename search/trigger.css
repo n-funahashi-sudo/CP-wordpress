@@ -1,0 +1,100 @@
+#property-search-box {
+  position: relative;
+}
+
+#ps-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  background: none;
+}
+
+#ps-input {
+  padding-right: 35px;
+  border: none;
+  border-bottom: 1px solid;
+}
+.live-list {
+  transition: 0.3s;
+}
+#ps-live-results {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  overflow: hidden; /* keeps children inside rounded corners */
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#ps-live-results {
+  opacity: 0;
+  transition: 0.3s;
+}
+
+#property-search-wrapper.active #ps-live-results {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.ps-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.live-thumb {
+  width: 20%;
+  max-width: 120px;
+  height: auto;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.live-title {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.live-item {
+  padding: 1rem 6px;
+  border-bottom: solid #dfdfdf;
+  transition: 0.3s;
+}
+.live-item:hover {
+  background: #f5f5f5;
+}
+.live-view-more {
+  text-align: center;
+  width: 100%;
+  background: none;
+  padding: 10px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.live-view-more:hover {
+  background: #dfdfdf;
+}
+.ct-icon {
+  cursor: pointer;
+}
+/* Spinner animation */
+.ps-loading svg {
+  display: none;
+}
+
+.ps-loading::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid #aaa;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ps-spin 0.6s linear infinite;
+  display: block;
+  margin: auto;
+}
+
+@keyframes ps-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
