@@ -1340,6 +1340,9 @@ function properties_list_shortcode($atts)
     ? filter_var($atts['is_inquiry'], FILTER_VALIDATE_BOOLEAN)
     : true;  // <-- default true
 
+  // define number of properties shown in the first rendering, default is 9
+  $number_of_post = !empty($atts['number_of_post']) ? intval($atts['number_of_post']) : 9;
+
   // Extract shortcode attributes
   $atts = shortcode_atts(array(
     'post_type' => 'property', // Default post type
@@ -1376,7 +1379,9 @@ function properties_list_shortcode($atts)
   $query = new WP_Query($args);
 
   // Start the output
-  $output = '<div class="similar-properties" data-lang="' . esc_attr($atts['lang']) . '" data-offset="6">';
+  $output = '<div class="similar-properties" 
+              data-lang="' . esc_attr($atts['lang']) . '" 
+              data-offset="' . esc_attr($number_of_post) . '">';
 
   // START ADD Sorting  functionality 25/10/03
   $sorted_posts = $query->posts;
@@ -1422,8 +1427,8 @@ function properties_list_shortcode($atts)
     while ($query->have_posts()):
       $query->the_post();
       $count++;
-      // Only show first 6 properties initially
-      $style = $count > 6 ? ' style="display:none;"' : '';
+      // Only show first $number_of_post properties initially
+      $style = $count > $number_of_post ? ' style="display:none;"' : '';
 
       // Get the ACF field values
       $general_layout = get_field('general_layout');
@@ -1505,8 +1510,8 @@ function properties_list_shortcode($atts)
       $output .= '</div>';
     endwhile;
 
-    // Add View More button if there are more than 6 properties
-    if ($count > 6) {
+    // Add View More button if there are more than $number_of_post properties
+    if ($count > $number_of_post) {
       $output .= '<div class="view-more-container">';
       $output .= '<button class="view-more-button">View More</button>';
       $output .= '</div>';
