@@ -794,20 +794,28 @@ function latest_properties_by_type_shortcode($atts)
   );
   // END Add availability filter: true or null 25/10/03
   $pickedup_query = get_pickedup_properties($atts['property_type'], 'property', $atts['lang'], $atts['posts_per_page']);
-  $pickedup_property_ids = wp_list_pluck($pickedup_query->posts, 'ID');
+  $found_pickedup_count = $pickedup_query->found_posts;
 
-  $args = array(
-    'post_type' => $atts['post_type'],
-    'posts_per_page' => $atts['posts_per_page'] - count($pickedup_property_ids),
-    'post__not_in' => array_merge(array($current_post_id), $pickedup_property_ids),
-    'orderby' => 'date',
-    'order' => $atts['order'],
-    'meta_query' => $meta_query,
-  );
 
-  $query = new WP_Query($args);
-  $query_post = $query->posts;
-  $query = update_query_posts($query, array_merge($pickedup_query->posts, $query_post));
+  if ($found_pickedup_count < $atts['posts_per_page']) {
+    $pickedup_property_ids = wp_list_pluck($pickedup_query->posts, 'ID');
+
+    $args = array(
+      'post_type' => $atts['post_type'],
+      'posts_per_page' => $atts['posts_per_page'] - count($pickedup_property_ids),
+      'post__not_in' => array_merge(array($current_post_id), $pickedup_property_ids),
+      'orderby' => 'date',
+      'order' => $atts['order'],
+      'meta_query' => $meta_query,
+    );
+
+    $query = new WP_Query($args);
+    $query_post = $query->posts;
+    $query = update_query_posts($query, array_merge($pickedup_query->posts, $query_post));
+  } else {
+    $query = $pickedup_query;
+  }
+  ;
 
   // START add get posts if queried posts is less than 3 25/10/03
   $posts = $query->posts;
@@ -2534,7 +2542,7 @@ function property_search_trigger_shortcode()
           return;
         }
 
-        doFullSearch(keyword);
+        goToPropertySearch(keyword);
       }
     });
     // result page //
@@ -2554,13 +2562,8 @@ function property_search_trigger_shortcode()
     let debounceTimer;
     function debounce(func, delay) {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        const textNow = input.value.trim();
-        if (!textNow) return; // ignore outdated keyword
-        func(textNow);
-      }, delay);
+      debounceTimer = setTimeout(func, delay);
     }
-
 
     /* ---- Format price ---- */
     function formatPrice(price) {
@@ -2571,7 +2574,7 @@ function property_search_trigger_shortcode()
     /* ---- Live Search ---- */
     input.addEventListener("input", () => {
       const keyword = input.value.trim();
-      if (!keyword) {
+      if (input.value.trim() !== keyword || keyword === "") {
         liveBox.innerHTML = "";
         return;
       }
@@ -2579,6 +2582,7 @@ function property_search_trigger_shortcode()
     });
 
     async function doLiveSearch(keyword) {
+      console.log('Live search started')
       if (document.activeElement !== input) return;
 
       btn.classList.add("ps-loading"); // start spinner
@@ -2589,6 +2593,8 @@ function property_search_trigger_shortcode()
         const res = await fetch(url);
         const data = await res.json();
         const totalPages = parseInt(res.headers.get("X-WP-TotalPages"), 10);
+
+        if (input.value.trim() !== keyword) return;
 
         if (!data.length) {
           liveBox.innerHTML = "";
