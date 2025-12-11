@@ -20,19 +20,12 @@
 }
 #ps-live-results {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  overflow: hidden; /* keeps children inside rounded corners */
+  overflow: hidden;
   transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-#ps-live-results {
-  opacity: 0;
-  transition: 0.3s;
-}
-
-#property-search-wrapper.active #ps-live-results {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  position: absolute;
+  z-index: 1;
+  background: white;
+  top: 50px;
 }
 
 .ps-link {
